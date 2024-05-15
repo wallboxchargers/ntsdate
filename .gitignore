@@ -1,0 +1,15 @@
+tags
+*.o
+.*.o*
+*/*.plugin
+.*.swp
+*.a
+host/nts_via_inetsocket_plugin
+ntsdate/ntsdate
+ta/*.ta
+ta/.ta*
+ta/ta-version.env
+ta/out/
+ta/9a743b32-06a5-4e32-bf15-82de3dc49472*
+.generated_version
+version.h

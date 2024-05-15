@@ -1,0 +1,177 @@
+/* libnts - a minimalistic RFC8915 implementation supporting custom transport
+ * Copyright (C) 2024: ABL GmbH
+ *
+ * This program is available under two distinct licenses:
+ * You may either choose to
+ *  a) adhere to the GNU General Public License version 2,
+ *     as published by the Free Software Foundation, or
+ *  b) obtain a commercial license from ABL GmbH,
+ *     Albert-Büttner-Straße 11, 91207 Lauf an der Pegnitz, Germany.
+ * */
+#ifndef NTS_ERROR_H
+#define NTS_ERROR_H
+
+#include <limits.h>
+
+// TODO: FIXME: Check that the entries are named and used consistently
+/* BUG: _we_ are expected to behave better than we were able to.
+ * DEFECT: _they_ delivered broken data, that can't be handled better
+ * FAULT: nonconforming state caused neither clearly by _us_ nor _them_
+ * */
+#define NTS_ERRORS(X) \
+    X( NTS_SUCCESS, = 0 ) \
+    X( NTS_BUG_UNKNOWN, = INT_MIN + 0x100000 ) \
+    X( NTS_BUG_NULL_POINTER, ) \
+    X( NTS_BUG_NULL_FIRSTCOOKIE, ) \
+    X( NTS_BUG_NO_NTSKE_HOST, ) \
+    X( NTS_BUG_NO_NTS_HOST, ) \
+    X( NTS_BUG_NO_NTS_SET, ) \
+    X( NTS_BUG_NO_PEERCHAIN, ) \
+    X( NTS_BUG_NO_COOKIESLEFT, ) \
+    X( NTS_BUG_NOT_INITIALIZED, ) \
+    X( NTS_BUG_MISSING_CERTIFICATE, ) \
+    X( NTS_BUG_EMPTY_PEERCHAIN, ) \
+    X( NTS_BUG_NEGATIVE_COUNT, ) \
+    X( NTS_BUG_NEGATIVE_INDEX, ) \
+    X( NTS_BUG_NEGATIVE_LENGTH, ) \
+    X( NTS_BUG_NEGATIVE_LENGTH_DER, ) \
+    X( NTS_BUG_NEGATIVE_LENGTH_NTSKE, ) \
+    X( NTS_BUG_NEGATIVE_LENGTH_NTSHOST, ) \
+    X( NTS_BUG_OUTOFBOUND_INDEX, ) \
+    X( NTS_BUG_STOPPED_STOPWATCH, ) \
+    X( NTS_BUG_TOO_LARGE_UINT16, ) \
+    X( NTS_BUG_TOO_LONG, ) \
+    X( NTS_BUG_TOO_LONG_LENGTH, ) \
+    X( NTS_BUG_TOO_LONG_NTSKE, ) \
+    X( NTS_BUG_TOO_LONG_NTSHOST, ) \
+    X( NTS_BUG_TOO_LONG_COOKIE, ) \
+    X( NTS_BUG_TOO_SHORT, ) \
+    X( NTS_BUG_TOO_SHORT_DER, ) \
+    X( NTS_BUG_TOO_SHORT_ERRORBUFFER, ) \
+    X( NTS_BUG_TOO_SHORT_HASHSTORE, ) \
+    X( NTS_BUG_TOO_SHORT_TIMEBUFFER, ) \
+    X( NTS_BUG_TOO_SHORT_UDPBUFFER, ) \
+    X( NTS_BUG_TOO_SHORT_AAEE, ) \
+    X( NTS_BUG_TOO_SHORT_CIPHERTEXT, ) \
+    X( NTS_BUG_TOO_SHORT_COOKIE, ) \
+    X( NTS_BUG_TOO_SHORT_LENGTH, ) \
+    X( NTS_BUG_BAD_BODYLENGTH, ) \
+    X( NTS_BUG_BAD_KEYLENGTH, ) \
+    X( NTS_BUG_BAD_PORTLENGTH, ) \
+    X( NTS_BUG_BAD_EFHLENGTH, ) \
+    X( NTS_BUG_BAD_COOKIELENGTH, ) \
+    X( NTS_BUG_BAD_CIPHERTEXTLENGTH, ) \
+    X( NTS_BUG_BAD_REMAININGBUFFERLEN, ) \
+    X( NTS_BUG_BAD_MEMORYORDER, ) \
+    X( NTS_BUG_CANT_PUSH_COOKIE, ) \
+    X( NTS_BUG_CANT_POPL_COOKIE, ) \
+    X( NTS_BUG_CANT_SET_NTSHOST, ) \
+    X( NTS_BUG_CANT_EXPORT_C2S, ) \
+    X( NTS_BUG_CANT_EXPORT_S2C, ) \
+    X( NTS_BUG_CANT_INIT_WOLFSSL, ) \
+    X( NTS_BUG_CANT_CHECKDOMAIN, ) \
+    X( NTS_BUG_CANT_USEALPN, ) \
+    X( NTS_BUG_CANT_ENCRYPT, ) \
+    X( NTS_BUG_CANT_MALLOC, ) \
+    X( NTS_BUG_CANT_PREPAREREQUEST, ) \
+    X( NTS_BUG_CANT_WRITE_TCP, ) \
+    X( NTS_BUG_CANT_WRITE_UDP, ) \
+    X( NTS_BUG_CANT_READ_TCP, ) \
+    X( NTS_BUG_CANT_OUTPUT, ) \
+    X( NTS_BUG_CANT_SNPRINTF, ) \
+    X( NTS_BUG_CANT_GMTIME, ) \
+    X( NTS_BUG_FAILED_TLS13CLIENT, ) \
+    X( NTS_BUG_FAILED_WOLFSSL_NEW, ) \
+    X( NTS_BUG_FAILED_KEYEXTRACTION, ) \
+    X( NTS_BUG_FAILED_SETUPTCP, ) \
+    X( NTS_BUG_FAILED_TEARDOWNTCP, ) \
+    X( NTS_BUG_FAILED_PLUGIN_SETUPTCP, ) \
+    X( NTS_BUG_FAILED_PLUGIN_RECVTCP, ) \
+    X( NTS_BUG_FAILED_PLUGIN_SENDTCP, ) \
+    X( NTS_BUG_FAILED_PLUGIN_TEARDOWNTCP, ) \
+    X( NTS_BUG_FAILED_PLUGIN_UDPREQUEST, ) \
+    X( NTS_BUG_FAILED_LOAD_VERIFYBUFFER, ) \
+    X( NTS_BUG_FAILED_STOREHASHES, ) \
+    X( NTS_BUG_FAILED_STOREHASH, ) \
+    X( NTS_BUG_FAILED_TOWRITE, ) \
+    X( NTS_BUG_FAILED_TCPTEARDOWN, ) \
+    X( NTS_BUG_FAILED_UDPTEARDOWN, ) \
+    X( NTS_BUG_FAILED_GETLINUXTIME, ) \
+    X( NTS_BUG_FAILED_SOCKET, ) \
+    X( NTS_BUG_FAILED_SETSOCKOPT, ) \
+    X( NTS_BUG_FAILED_CONNECT, ) \
+    X( NTS_BUG_FAILED_GETTIME, ) \
+    X( NTS_BUG_UNEXPECTED_FIELDTYPE, ) \
+    X( NTS_BUG_UNEXPECTED_RECORDTYPE, ) \
+    X( NTS_BUG_UNEXPECTED_AEAD, ) \
+    X( NTS_BUG_UNEXPECTED_NEXTPROTOCOL, ) \
+    X( NTS_DEFECT_UNKNOWN, = INT_MIN + 0x200000 ) \
+    X( NTS_DEFECT_TOO_SHORT_EXTENSIONFIELD, ) \
+    X( NTS_DEFECT_TOO_SHORT_CIPHERTEXT, ) \
+    X( NTS_DEFECT_FAILED_AEADDECRYPT, ) \
+    X( NTS_DEFECT_TOO_SHORT_REMAINING, ) \
+    X( NTS_DEFECT_TOO_SHORT_LENGTH, ) \
+    X( NTS_DEFECT_UNEXPECTED_LENGTH, ) \
+    X( NTS_DEFECT_MISSING_DATE, ) \
+    X( NTS_DEFECT_MISSING_CN, ) \
+    X( NTS_FAULT_UNKNOWN, = INT_MIN + 0x300000 ) \
+    X( NTS_FAULT_COOKIE_TOO_LONG, ) \
+    X( NTS_FAULT_MISSING_FIELDS, ) \
+    X( NTS_FAULT_MISSING_FIELDS_NTSKE, ) \
+    X( NTS_FAULT_MISSING_FIELDS_NTS, ) \
+    X( NTS_FAULT_MISSING_NTS, ) \
+    X( NTS_FAULT_FAILED_TCPRECV, ) \
+    X( NTS_FAULT_FAILED_TLSHANDSHAKE, ) \
+    X( NTS_FAULT_FAILED_UDPSETUP, ) \
+    X( NTS_FAULT_FAILED_UDPSEND, ) \
+    X( NTS_FAULT_FAILED_UDPRECV, ) \
+    X( NTS_FAULT_FAILED_UDPREQUEST, ) \
+    X( NTS_FAULT_FAILED_NTSKEREQUEST, ) \
+    X( NTS_FAULT_FAILED_NTS, ) \
+    X( NTS_FAULT_FAILED_AAEEPARSE, ) \
+    X( NTS_FAULT_FAILED_GETADDRINFO, ) \
+    X( NTS_FAULT_INVALID_PORTNUMBER, ) \
+    X( NTS_FAULT_INVALID_UNIQUEIDENTIFIER, ) \
+    X( NTS_FAULT_TOO_SHORT_READ, ) \
+    X( NTS_FAULT_TOO_SHORT_READ_NTSKE_HEADER, ) \
+    X( NTS_FAULT_TOO_SHORT_READ_NTSKE_BODY, ) \
+    X( NTS_FAULT_TOO_SHORT_AAEE, ) \
+    X( NTS_FAULT_TOO_SHORT_NTP, ) \
+    X( NTS_FAULT_TOO_SHORT_EFH, ) \
+    X( NTS_FAULT_TOO_LONG_EXECTIME, ) \
+    X( NTS_FAULT_KISSOFDEATH, ) \
+    X( NTS_FAULT_NTSKEERROR, ) \
+    X( NTS_FAULT_NTSKEWARNING, ) \
+    X( NTS_FAULT_UNEXPECTEDCRITICAL, ) \
+    X( NTS_FAULT_NEGATIVE_COUNT, ) \
+    X( NTS_FAULT_CANT_VERIFY, ) \
+    X( NTS_FAULT_NO_DATA, ) \
+    X( NTS_FAULT_NO_SERVERREPLY, ) \
+    X( NTS_FAULT_WRONG_VERSIONNUMBER, ) \
+
+#define NTS_LOGLEVELS(X) \
+    X( NTS_LOG_TRACE, = 0 ) \
+    X( NTS_LOG_DEBUG, ) \
+    X( NTS_LOG_VERBOSE, ) \
+    X( NTS_LOG_INFO, ) \
+    X( NTS_LOG_WARN, ) \
+    X( NTS_LOG_ERROR, ) \
+    X( NTS_LOG_FATAL, ) \
+    X( NTS_LOG_NONE, = 255 ) \
+
+
+#define WRITTEN_AS_ENUMENTRY( name, assignment ) name assignment,
+#define WRITTEN_AS_CASE( name, assignment ) case name: return #name ;
+
+typedef enum {
+    NTS_ERRORS(WRITTEN_AS_ENUMENTRY)
+} ntserror;
+
+typedef enum {
+    NTS_LOGLEVELS(WRITTEN_AS_ENUMENTRY)
+} ntslog;
+
+const char *ntsErrorAsString(ntserror err);
+const char *ntsLoglevelAsString(ntslog sev);
+
+#endif /* NTS_ERROR_H */

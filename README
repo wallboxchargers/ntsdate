@@ -1,0 +1,53 @@
+ntsdate - a minimalistic RFC8915 implementation
+
+
+CONTENTS
+--------
+
+ntsdate consists of the following subfolders:
+crypto: supplying TLS1.3, AEAD_AES_SIV_CMAC_256, SHA256 via wolfssl (to be downloaded separately)
+libnts: a rather minimal implementation of the NTS Key Exchange and NTS protected NTP query logic supporting custom transport
+libnts-netio: implementing the custom transport / network-related part of the interface required by libnts
+libnts-log2syslog: providing a possible implementation of Log specified by the interface required by libnts using vsyslog
+ntsdate: final executeable to be invoked by user
+
+Furthermore, an advanced demonstrative example leveraging custom transport and cross-compilation is provided:
+host: normal world ELF binary example requesting a timestamp
+ta: secure world executable providing the custom transport interface to libnts and tunneling requests to normal world
+inetsocket: normal world supplicant plugin providing the normal world endpoint by relying on libnts-netio for the implementation
+
+
+BUILDING
+--------
+
+Step 1:
+Provide wolfSSL v5.6.6-stable in crypto/wolfssl. At the the time of writing, you could run, e.g.,
+  cd crypto
+  git clone -b v5.6.6-stable --depth 1 https://github.com/wolfSSL/wolfssl wolfssl
+  cd ..
+
+Step 2:
+Run
+  make
+to generate ntsdate/ntsdate.
+
+
+If you happen to have a suitable cross-compilation infrastructure in place and want to experiment with the custom transport example,
+run
+  make clean
+  make ta
+to build an linux executable (host/nts_via_inetsocket_plugin), a "trusted application" (ta/out/9a743b32-06a5-4e32-bf15-82de3dc49472.ta)
+and a plugin providing network facilities of linux to the trusted application (inetsocket/e0bb2422-a34e-4972-9c4f-17ad2e7ee965.plugin).
+
+
+LICENSE
+-------
+
+ntsdate is available under two distinct licenses: You may choose to either
+ a) adhere to the GNU General Public License version 2 as detailed in LICENSE_GPLv2
+    (suitable for free/libre open source software projects), or
+ b) obtain a commercial license from ABL GmbH, Albert-Büttner-Straße 11, 91207 Lauf an der Pegnitz, Germany
+    in case you want to incorporate ntsdate or one of its components into proprietary software
+    (non-free or closed source).
+
+The custom transport example contains some code distributed under different licenses, as stated in the respective source files.
